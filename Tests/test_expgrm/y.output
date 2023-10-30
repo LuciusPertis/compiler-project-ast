@@ -1,0 +1,171 @@
+Grammar
+
+    0 $accept: E $end
+
+    1 E: E PLUS T
+    2  | T
+
+    3 T: T TIMES F
+    4  | F
+
+    5 F: LPAREN E RPAREN
+    6  | ID
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+PLUS (258) 1
+TIMES (259) 3
+LPAREN (260) 5
+RPAREN (261) 5
+ID (262) 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (8)
+    on left: 0
+E (9)
+    on left: 1 2, on right: 0 1 5
+T (10)
+    on left: 3 4, on right: 1 2 3
+F (11)
+    on left: 5 6, on right: 3 4
+
+
+state 0
+
+    0 $accept: . E $end
+    1 E: . E PLUS T
+    2  | . T
+    3 T: . T TIMES F
+    4  | . F
+    5 F: . LPAREN E RPAREN
+    6  | . ID
+
+    LPAREN  shift, and go to state 1
+    ID      shift, and go to state 2
+
+    E  go to state 3
+    T  go to state 4
+    F  go to state 5
+
+
+state 1
+
+    1 E: . E PLUS T
+    2  | . T
+    3 T: . T TIMES F
+    4  | . F
+    5 F: . LPAREN E RPAREN
+    5  | LPAREN . E RPAREN
+    6  | . ID
+
+    LPAREN  shift, and go to state 1
+    ID      shift, and go to state 2
+
+    E  go to state 6
+    T  go to state 4
+    F  go to state 5
+
+
+state 2
+
+    6 F: ID .
+
+    $default  reduce using rule 6 (F)
+
+
+state 3
+
+    0 $accept: E . $end
+    1 E: E . PLUS T
+
+    $end  shift, and go to state 7
+    PLUS  shift, and go to state 8
+
+
+state 4
+
+    2 E: T .  [$end, PLUS, RPAREN]
+    3 T: T . TIMES F
+
+    TIMES  shift, and go to state 9
+
+    $default  reduce using rule 2 (E)
+
+
+state 5
+
+    4 T: F .
+
+    $default  reduce using rule 4 (T)
+
+
+state 6
+
+    1 E: E . PLUS T
+    5 F: LPAREN E . RPAREN
+
+    PLUS    shift, and go to state 8
+    RPAREN  shift, and go to state 10
+
+
+state 7
+
+    0 $accept: E $end .
+
+    $default  accept
+
+
+state 8
+
+    1 E: E PLUS . T
+    3 T: . T TIMES F
+    4  | . F
+    5 F: . LPAREN E RPAREN
+    6  | . ID
+
+    LPAREN  shift, and go to state 1
+    ID      shift, and go to state 2
+
+    T  go to state 11
+    F  go to state 5
+
+
+state 9
+
+    3 T: T TIMES . F
+    5 F: . LPAREN E RPAREN
+    6  | . ID
+
+    LPAREN  shift, and go to state 1
+    ID      shift, and go to state 2
+
+    F  go to state 12
+
+
+state 10
+
+    5 F: LPAREN E RPAREN .
+
+    $default  reduce using rule 5 (F)
+
+
+state 11
+
+    1 E: E PLUS T .  [$end, PLUS, RPAREN]
+    3 T: T . TIMES F
+
+    TIMES  shift, and go to state 9
+
+    $default  reduce using rule 1 (E)
+
+
+state 12
+
+    3 T: T TIMES F .
+
+    $default  reduce using rule 3 (T)
