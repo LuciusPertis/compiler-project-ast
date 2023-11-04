@@ -30,6 +30,7 @@
 program : chunks exps           /* this forces decl before use */
         ;
 chunks  : chunk chunks
+        | /* nullable epsillon */
         ;
 chunk   : tydec
         | vardec
@@ -40,10 +41,11 @@ vardec  : "var" ID ":=" rvalue
         : "var" ID ":" ty      /* if type is given, init val not required; also array cant be init during decl (we will add a rule for this or init all elems with the rvalue ) */
         : "var" ID ":" ty ":=" rvalue
         ;
-tydec   : "type" ID "=" ty
+tydec   : "type" ID "=" ty      /* if records are not there this is basically allias */
         ;
 ty      : type_id
         | "array of" type_id "[" NUMCONST "]"   /* fixed size intro */
+        | ID    /* already declared types */
         ;
 type_id : "int"
         | "str"
@@ -64,7 +66,7 @@ exp     : lvalue ":=" rvalue    /* Variables assingment */
         | "break"                                   /* Control Flow */
         ;
 ctrl_else       : "else" exp                       /* Control Flow */
-                | %empty                                                      
+                | /* nullable epsillon */                                                      
         ;
 
 rvalue  : NIL                    /* Literal  */
@@ -75,7 +77,7 @@ rvalue  : NIL                    /* Literal  */
         ;
 binops  : "-" binops            /* Operations */
         
-        | fexp "=" binop
+        | fexp "=" binops
         | fexp "<>"binops 
         | fexp ">" binops
         | fexp "<" binops
@@ -85,15 +87,15 @@ binops  : "-" binops            /* Operations */
         
         | fexp
         ;
-fexp    : fexp "*" fexp
-        | fexp "/" fexp
+fexp    : texp "*" fexp
+        | texp "/" fexp
         ;
-fexp    : "(" rvalue ")"
+texp    : "(" rvalue ")"
         | rvalue
         ;
 
 lvalue  : ID 
-        : ID "[" rvalue "]"
+        | ID "[" rvalue "]"
         ;
         
 
