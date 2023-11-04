@@ -17,5 +17,38 @@ subset_grm.yacc:89.11-23: warning: rule useless in parser due to conflicts: fexp
 subset_grm.yacc:90.11-23: warning: rule useless in parser due to conflicts: fexp: fexp "/" fexp
 
 can't understand why 
-binops  : "-" binops  
+code: binops  : "-" binops  
 is redundant because fexp is not nullable/epsillon
+
+bison produced rule
+code: 7 rvalue: "var" ID ":"
+WTH !?
+
+commit 5fbeedbd5da34bbb5206bafe1a27b84a8b18145a (HEAD -> main)
+Author: --help <luciuspertis@gmail.com>
+Date:   Sun Nov 5 02:36:47 2023 +0530
+
+    fix: fexp to lvalue (texp); vardec and exp collision needs to be resolved
+
+Note:
+code: 6 vardec: "var" ID ":="
+code: 7 rvalue: "var" ID ":"
+i guess this is happening because exps are not bounded by ";" so the parses is thinking vardec is simply
+code: 6 vardec: "var" ID ":="
+and then a new/separate exp is starting as an rvalue
+Though good news is my conflict for shift/reduce is singular :D
+
+added 
+code: chunks  : chunk ";" chunks      /* adding semicolon to bound exp from decl, desperate move */
+code:        | /* nullable epsillon */
+code:        ;
+still not helping (parser is totally removing the binops production !?)
+
+OMGGGG it WAS A TYPOOOOO ":" instead of "|" 
+thank god i installed a syntax highlighter for yacc :/
+
+
+
+
+
+

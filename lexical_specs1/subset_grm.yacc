@@ -29,7 +29,7 @@
 /* Program struct */
 program : chunks exps           /* this forces decl before use */
         ;
-chunks  : chunk chunks
+chunks  : chunk ";" chunks      /* adding semicolon to bound exp from decl, desperate move */
         | /* nullable epsillon */
         ;
 chunk   : tydec
@@ -37,9 +37,9 @@ chunk   : tydec
         ;
 
 /* declarations */
-vardec  : "var" ID ":=" rvalue
-        : "var" ID ":" ty      /* if type is given, init val not required; also array cant be init during decl (we will add a rule for this or init all elems with the rvalue ) */
-        : "var" ID ":" ty ":=" rvalue
+vardec  : "var" ID ":=" rvalue 
+        | "var" ID ":" ty      /* if type is given, init val not required; also array cant be init during decl (we will add a rule for this or init all elems with the rvalue ) */
+        | "var" ID ":" ty ":=" rvalue
         ;
 tydec   : "type" ID "=" ty      /* if records are not there this is basically allias */
         ;
