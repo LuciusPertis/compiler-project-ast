@@ -9,12 +9,12 @@
 %token PLUS "+" MINUS "-" MULT "*" DIVIDE "/" EQ "=" NOTEQ "<>" GT ">" LT "<"
 %token ASSIGN ":="
 
-%token VAR "var"
-%token TYPE "type"
+%token DECLVAR "var"
+%token DECLTYP "type"
 
-%token WHILE "while" DO "do"
-%token IF "if" THEN "then" ELSE "else"
-%token BREAK break
+%token LOOPCON "while" LOOPBODY "do"
+%token JMPCON "if" JMPTRUE "then" JMPFALSE "else"
+%token BREAK "break"
 
 %%
 
