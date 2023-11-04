@@ -421,7 +421,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    23,    23,    24,    27,    28,    31,    32
+       0,    25,    25,    26,    29,    30,    33,    34
 };
 #endif
 
@@ -1322,35 +1322,49 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 23 "simple_binexp.yacc"
+#line 25 "simple_binexp.yacc"
     { printf("E -> E + T\n"); ;}
+    break;
+
+  case 3:
+
+/* Line 1455 of yacc.c  */
+#line 26 "simple_binexp.yacc"
+    { printf("E -> T\n"); ;}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 27 "simple_binexp.yacc"
+#line 29 "simple_binexp.yacc"
     { printf("T -> T * F\n"); ;}
+    break;
+
+  case 5:
+
+/* Line 1455 of yacc.c  */
+#line 30 "simple_binexp.yacc"
+    { printf("T -> F\n"); ;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 31 "simple_binexp.yacc"
+#line 33 "simple_binexp.yacc"
     { printf("F -> (E)\n"); ;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 32 "simple_binexp.yacc"
+#line 34 "simple_binexp.yacc"
     { printf("F -> id\n"); ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1354 "simple_binexp.tab.cacc"
+#line 1368 "simple_binexp.tab.cacc"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1562,7 +1576,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 35 "simple_binexp.yacc"
+#line 37 "simple_binexp.yacc"
 
 
 int main() {
