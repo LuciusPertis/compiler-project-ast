@@ -1,43 +1,6 @@
-Nonterminals useless in grammar
-
-   binops
-   fexp
-   texp
-
-
-Terminals unused in grammar
-
-   "+"
-   "-"
-   "*"
-   "/"
-   "<>"
-   ">"
-   "<"
-   "float"
-
-
-Rules useless in grammar
-
-   32 rvalue: binops
-
-   33 binops: "-" binops
-   34       | fexp "=" binops
-   35       | fexp "<>" binops
-   36       | fexp ">" binops
-   37       | fexp "<" binops
-   38       | fexp "+" binops
-   39       | fexp "-" binops
-   40       | fexp
-
-   41 fexp: texp "*" fexp
-   42     | texp "/" fexp
-
-   43 texp: "(" rvalue ")"
-   44     | rvalue
-
-
-State 53 conflicts: 1 shift/reduce
+State 34 conflicts: 7 reduce/reduce
+State 35 conflicts: 7 reduce/reduce
+State 81 conflicts: 1 shift/reduce
 
 
 Grammar
@@ -65,65 +28,86 @@ Grammar
    13 type_id: "int"
    14        | "str"
    15        | "bool"
+   16        | "float"
 
-   16 exps: exp
-   17     | exp ";" exps
-   18     | /* empty */
+   17 exps: exp
+   18     | exp ";" exps
+   19     | /* empty */
 
-   19 exp: lvalue ":=" rvalue
-   20    | "(" exps ")"
-   21    | "if" rvalue "then" exp ctrl_else
-   22    | "while" rvalue "do" exp
-   23    | "break"
+   20 exp: lvalue ":=" rvalue
+   21    | "(" exps ")"
+   22    | "if" rvalue "then" exp ctrl_else
+   23    | "while" rvalue "do" exp
+   24    | "break"
 
-   24 ctrl_else: "else" exp
-   25          | /* empty */
+   25 ctrl_else: "else" exp
+   26          | /* empty */
 
-   26 rvalue: "nil"
-   27       | NUMCONST
-   28       | STRCONST
-   29       | lvalue
+   27 rvalue: binops
+   28       | lvalue
+   29       | consts
 
-   30 lvalue: ID
-   31       | ID "[" rvalue "]"
+   30 binops: "-" binops
+   31       | fexp "=" binops
+   32       | fexp "<>" binops
+   33       | fexp ">" binops
+   34       | fexp "<" binops
+   35       | fexp "+" binops
+   36       | fexp "-" binops
+   37       | fexp
+
+   38 fexp: texp "*" fexp
+   39     | texp "/" fexp
+   40     | texp
+
+   41 texp: "(" rvalue ")"
+   42     | lvalue
+   43     | consts
+
+   44 lvalue: ID "[" rvalue "]"
+   45       | ID
+
+   46 consts: "nil"
+   47       | NUMCONST
+   48       | STRCONST
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-"nil" (258) 26
-ID (259) 6 7 8 9 12 30 31
-NUMCONST (260) 11 27
-STRCONST (261) 28
-";" (262) 2 17
+"nil" (258) 46
+ID (259) 6 7 8 9 12 44 45
+NUMCONST (260) 11 47
+STRCONST (261) 48
+";" (262) 2 18
 ":" (263) 7 8
-"(" (264) 20
-")" (265) 20
-"[" (266) 11 31
-"]" (267) 11 31
-"+" (268)
-"-" (269)
-"*" (270)
-"/" (271)
-"=" (272) 9
-"<>" (273)
-">" (274)
-"<" (275)
-":=" (276) 6 8 19
+"(" (264) 21 41
+")" (265) 21 41
+"[" (266) 11 44
+"]" (267) 11 44
+"+" (268) 35
+"-" (269) 30 36
+"*" (270) 38
+"/" (271) 39
+"=" (272) 9 31
+"<>" (273) 32
+">" (274) 33
+"<" (275) 34
+":=" (276) 6 8 20
 "var" (277) 6 7 8
 "type" (278) 9
 "array of" (279) 11
 "int" (280) 13
-"float" (281)
+"float" (281) 16
 "str" (282) 14
 "bool" (283) 15
-"while" (284) 22
-"do" (285) 22
-"if" (286) 21
-"then" (287) 21
-"else" (288) 24
-"break" (289) 23
+"while" (284) 23
+"do" (285) 23
+"if" (286) 22
+"then" (287) 22
+"else" (288) 25
+"break" (289) 24
 
 
 Nonterminals, with rules where they appear
@@ -143,17 +127,26 @@ tydec (40)
 ty (41)
     on left: 10 11 12, on right: 7 8 9
 type_id (42)
-    on left: 13 14 15, on right: 10 11
+    on left: 13 14 15 16, on right: 10 11
 exps (43)
-    on left: 16 17 18, on right: 1 17 20
+    on left: 17 18 19, on right: 1 18 21
 exp (44)
-    on left: 19 20 21 22 23, on right: 16 17 21 22 24
+    on left: 20 21 22 23 24, on right: 17 18 22 23 25
 ctrl_else (45)
-    on left: 24 25, on right: 21
+    on left: 25 26, on right: 22
 rvalue (46)
-    on left: 26 27 28 29, on right: 6 8 19 21 22 31
-lvalue (47)
-    on left: 30 31, on right: 19 29
+    on left: 27 28 29, on right: 6 8 20 22 23 41 44
+binops (47)
+    on left: 30 31 32 33 34 35 36 37, on right: 27 30 31 32 33 34 35
+    36
+fexp (48)
+    on left: 38 39 40, on right: 31 32 33 34 35 36 37 38 39
+texp (49)
+    on left: 41 42 43, on right: 38 39 40
+lvalue (50)
+    on left: 44 45, on right: 20 28 42
+consts (51)
+    on left: 46 47 48, on right: 29 43
 
 
 state 0
@@ -207,16 +200,16 @@ state 3
 state 4
 
     1 program: chunks . exps
-   16 exps: . exp
-   17     | . exp ";" exps
-   18     | .  [$end]
-   19 exp: . lvalue ":=" rvalue
-   20    | . "(" exps ")"
-   21    | . "if" rvalue "then" exp ctrl_else
-   22    | . "while" rvalue "do" exp
-   23    | . "break"
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   17 exps: . exp
+   18     | . exp ";" exps
+   19     | .  [$end]
+   20 exp: . lvalue ":=" rvalue
+   21    | . "(" exps ")"
+   22    | . "if" rvalue "then" exp ctrl_else
+   23    | . "while" rvalue "do" exp
+   24    | . "break"
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
 
     ID       shift, and go to state 11
     "("      shift, and go to state 12
@@ -224,7 +217,7 @@ state 4
     "if"     shift, and go to state 14
     "break"  shift, and go to state 15
 
-    $default  reduce using rule 18 (exps)
+    $default  reduce using rule 19 (exps)
 
     exps    go to state 16
     exp     go to state 17
@@ -278,27 +271,27 @@ state 10
 
 state 11
 
-   30 lvalue: ID .  [$end, ";", ")", "]", ":=", "do", "then", "else"]
-   31       | ID . "[" rvalue "]"
+   44 lvalue: ID . "[" rvalue "]"
+   45       | ID .  [$end, ";", ")", "]", "+", "-", "*", "/", "=", "<>", ">", "<", ":=", "do", "then", "else"]
 
     "["  shift, and go to state 23
 
-    $default  reduce using rule 30 (lvalue)
+    $default  reduce using rule 45 (lvalue)
 
 
 state 12
 
-   16 exps: . exp
-   17     | . exp ";" exps
-   18     | .  [")"]
-   19 exp: . lvalue ":=" rvalue
-   20    | . "(" exps ")"
-   20    | "(" . exps ")"
-   21    | . "if" rvalue "then" exp ctrl_else
-   22    | . "while" rvalue "do" exp
-   23    | . "break"
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   17 exps: . exp
+   18     | . exp ";" exps
+   19     | .  [")"]
+   20 exp: . lvalue ":=" rvalue
+   21    | . "(" exps ")"
+   21    | "(" . exps ")"
+   22    | . "if" rvalue "then" exp ctrl_else
+   23    | . "while" rvalue "do" exp
+   24    | . "break"
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
 
     ID       shift, and go to state 11
     "("      shift, and go to state 12
@@ -306,7 +299,7 @@ state 12
     "if"     shift, and go to state 14
     "break"  shift, and go to state 15
 
-    $default  reduce using rule 18 (exps)
+    $default  reduce using rule 19 (exps)
 
     exps    go to state 24
     exp     go to state 17
@@ -315,47 +308,91 @@ state 12
 
 state 13
 
-   22 exp: "while" . rvalue "do" exp
-   26 rvalue: . "nil"
-   27       | . NUMCONST
-   28       | . STRCONST
-   29       | . lvalue
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   23 exp: "while" . rvalue "do" exp
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
     "nil"     shift, and go to state 25
     ID        shift, and go to state 11
     NUMCONST  shift, and go to state 26
     STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    rvalue  go to state 28
-    lvalue  go to state 29
+    rvalue  go to state 30
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
 
 
 state 14
 
-   21 exp: "if" . rvalue "then" exp ctrl_else
-   26 rvalue: . "nil"
-   27       | . NUMCONST
-   28       | . STRCONST
-   29       | . lvalue
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   22 exp: "if" . rvalue "then" exp ctrl_else
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
     "nil"     shift, and go to state 25
     ID        shift, and go to state 11
     NUMCONST  shift, and go to state 26
     STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    rvalue  go to state 30
-    lvalue  go to state 29
+    rvalue  go to state 36
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
 
 
 state 15
 
-   23 exp: "break" .
+   24 exp: "break" .
 
-    $default  reduce using rule 23 (exp)
+    $default  reduce using rule 24 (exp)
 
 
 state 16
@@ -367,19 +404,19 @@ state 16
 
 state 17
 
-   16 exps: exp .  [$end, ")"]
-   17     | exp . ";" exps
+   17 exps: exp .  [$end, ")"]
+   18     | exp . ";" exps
 
-    ";"  shift, and go to state 31
+    ";"  shift, and go to state 37
 
-    $default  reduce using rule 16 (exps)
+    $default  reduce using rule 17 (exps)
 
 
 state 18
 
-   19 exp: lvalue . ":=" rvalue
+   20 exp: lvalue . ":=" rvalue
 
-    ":="  shift, and go to state 32
+    ":="  shift, and go to state 38
 
 
 state 19
@@ -399,7 +436,7 @@ state 19
 
     $default  reduce using rule 3 (chunks)
 
-    chunks  go to state 33
+    chunks  go to state 39
     chunk   go to state 5
     vardec  go to state 6
     tydec   go to state 7
@@ -415,34 +452,58 @@ state 20
    13 type_id: . "int"
    14        | . "str"
    15        | . "bool"
+   16        | . "float"
 
-    ID          shift, and go to state 34
-    "array of"  shift, and go to state 35
-    "int"       shift, and go to state 36
-    "str"       shift, and go to state 37
-    "bool"      shift, and go to state 38
+    ID          shift, and go to state 40
+    "array of"  shift, and go to state 41
+    "int"       shift, and go to state 42
+    "float"     shift, and go to state 43
+    "str"       shift, and go to state 44
+    "bool"      shift, and go to state 45
 
-    ty       go to state 39
-    type_id  go to state 40
+    ty       go to state 46
+    type_id  go to state 47
 
 
 state 21
 
     6 vardec: "var" ID ":=" . rvalue
-   26 rvalue: . "nil"
-   27       | . NUMCONST
-   28       | . STRCONST
-   29       | . lvalue
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
     "nil"     shift, and go to state 25
     ID        shift, and go to state 11
     NUMCONST  shift, and go to state 26
     STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    rvalue  go to state 41
-    lvalue  go to state 29
+    rvalue  go to state 48
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
 
 
 state 22
@@ -454,98 +515,276 @@ state 22
    13 type_id: . "int"
    14        | . "str"
    15        | . "bool"
+   16        | . "float"
 
-    ID          shift, and go to state 34
-    "array of"  shift, and go to state 35
-    "int"       shift, and go to state 36
-    "str"       shift, and go to state 37
-    "bool"      shift, and go to state 38
+    ID          shift, and go to state 40
+    "array of"  shift, and go to state 41
+    "int"       shift, and go to state 42
+    "float"     shift, and go to state 43
+    "str"       shift, and go to state 44
+    "bool"      shift, and go to state 45
 
-    ty       go to state 42
-    type_id  go to state 40
+    ty       go to state 49
+    type_id  go to state 47
 
 
 state 23
 
-   26 rvalue: . "nil"
-   27       | . NUMCONST
-   28       | . STRCONST
-   29       | . lvalue
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
-   31       | ID "[" . rvalue "]"
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   44       | ID "[" . rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
     "nil"     shift, and go to state 25
     ID        shift, and go to state 11
     NUMCONST  shift, and go to state 26
     STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    rvalue  go to state 43
-    lvalue  go to state 29
+    rvalue  go to state 50
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
 
 
 state 24
 
-   20 exp: "(" exps . ")"
+   21 exp: "(" exps . ")"
 
-    ")"  shift, and go to state 44
+    ")"  shift, and go to state 51
 
 
 state 25
 
-   26 rvalue: "nil" .
+   46 consts: "nil" .
 
-    $default  reduce using rule 26 (rvalue)
+    $default  reduce using rule 46 (consts)
 
 
 state 26
 
-   27 rvalue: NUMCONST .
+   47 consts: NUMCONST .
 
-    $default  reduce using rule 27 (rvalue)
+    $default  reduce using rule 47 (consts)
 
 
 state 27
 
-   28 rvalue: STRCONST .
+   48 consts: STRCONST .
 
-    $default  reduce using rule 28 (rvalue)
+    $default  reduce using rule 48 (consts)
 
 
 state 28
 
-   22 exp: "while" rvalue . "do" exp
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   41     | "(" . rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
-    "do"  shift, and go to state 45
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    rvalue  go to state 52
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
 
 
 state 29
 
-   29 rvalue: lvalue .
+   30 binops: . "-" binops
+   30       | "-" . binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
-    $default  reduce using rule 29 (rvalue)
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    binops  go to state 53
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
 
 
 state 30
 
-   21 exp: "if" rvalue . "then" exp ctrl_else
+   23 exp: "while" rvalue . "do" exp
 
-    "then"  shift, and go to state 46
+    "do"  shift, and go to state 56
 
 
 state 31
 
-   16 exps: . exp
-   17     | . exp ";" exps
-   17     | exp ";" . exps
-   18     | .  [$end, ")"]
-   19 exp: . lvalue ":=" rvalue
-   20    | . "(" exps ")"
-   21    | . "if" rvalue "then" exp ctrl_else
-   22    | . "while" rvalue "do" exp
-   23    | . "break"
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   27 rvalue: binops .
+
+    $default  reduce using rule 27 (rvalue)
+
+
+state 32
+
+   31 binops: fexp . "=" binops
+   32       | fexp . "<>" binops
+   33       | fexp . ">" binops
+   34       | fexp . "<" binops
+   35       | fexp . "+" binops
+   36       | fexp . "-" binops
+   37       | fexp .  [$end, ";", ")", "]", "do", "then", "else"]
+
+    "+"   shift, and go to state 57
+    "-"   shift, and go to state 58
+    "="   shift, and go to state 59
+    "<>"  shift, and go to state 60
+    ">"   shift, and go to state 61
+    "<"   shift, and go to state 62
+
+    $default  reduce using rule 37 (binops)
+
+
+state 33
+
+   38 fexp: texp . "*" fexp
+   39     | texp . "/" fexp
+   40     | texp .  [$end, ";", ")", "]", "+", "-", "=", "<>", ">", "<", "do", "then", "else"]
+
+    "*"  shift, and go to state 63
+    "/"  shift, and go to state 64
+
+    $default  reduce using rule 40 (fexp)
+
+
+state 34
+
+   28 rvalue: lvalue .  [$end, ";", ")", "]", "do", "then", "else"]
+   42 texp: lvalue .  [$end, ";", ")", "]", "+", "-", "*", "/", "=", "<>", ">", "<", "do", "then", "else"]
+
+    $end      reduce using rule 28 (rvalue)
+    $end      [reduce using rule 42 (texp)]
+    ";"       reduce using rule 28 (rvalue)
+    ";"       [reduce using rule 42 (texp)]
+    ")"       reduce using rule 28 (rvalue)
+    ")"       [reduce using rule 42 (texp)]
+    "]"       reduce using rule 28 (rvalue)
+    "]"       [reduce using rule 42 (texp)]
+    "do"      reduce using rule 28 (rvalue)
+    "do"      [reduce using rule 42 (texp)]
+    "then"    reduce using rule 28 (rvalue)
+    "then"    [reduce using rule 42 (texp)]
+    "else"    reduce using rule 28 (rvalue)
+    "else"    [reduce using rule 42 (texp)]
+    $default  reduce using rule 42 (texp)
+
+
+state 35
+
+   29 rvalue: consts .  [$end, ";", ")", "]", "do", "then", "else"]
+   43 texp: consts .  [$end, ";", ")", "]", "+", "-", "*", "/", "=", "<>", ">", "<", "do", "then", "else"]
+
+    $end      reduce using rule 29 (rvalue)
+    $end      [reduce using rule 43 (texp)]
+    ";"       reduce using rule 29 (rvalue)
+    ";"       [reduce using rule 43 (texp)]
+    ")"       reduce using rule 29 (rvalue)
+    ")"       [reduce using rule 43 (texp)]
+    "]"       reduce using rule 29 (rvalue)
+    "]"       [reduce using rule 43 (texp)]
+    "do"      reduce using rule 29 (rvalue)
+    "do"      [reduce using rule 43 (texp)]
+    "then"    reduce using rule 29 (rvalue)
+    "then"    [reduce using rule 43 (texp)]
+    "else"    reduce using rule 29 (rvalue)
+    "else"    [reduce using rule 43 (texp)]
+    $default  reduce using rule 43 (texp)
+
+
+state 36
+
+   22 exp: "if" rvalue . "then" exp ctrl_else
+
+    "then"  shift, and go to state 65
+
+
+state 37
+
+   17 exps: . exp
+   18     | . exp ";" exps
+   18     | exp ";" . exps
+   19     | .  [$end, ")"]
+   20 exp: . lvalue ":=" rvalue
+   21    | . "(" exps ")"
+   22    | . "if" rvalue "then" exp ctrl_else
+   23    | . "while" rvalue "do" exp
+   24    | . "break"
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
 
     ID       shift, and go to state 11
     "("      shift, and go to state 12
@@ -553,260 +792,680 @@ state 31
     "if"     shift, and go to state 14
     "break"  shift, and go to state 15
 
-    $default  reduce using rule 18 (exps)
+    $default  reduce using rule 19 (exps)
 
-    exps    go to state 47
+    exps    go to state 66
     exp     go to state 17
     lvalue  go to state 18
 
 
-state 32
+state 38
 
-   19 exp: lvalue ":=" . rvalue
-   26 rvalue: . "nil"
-   27       | . NUMCONST
-   28       | . STRCONST
-   29       | . lvalue
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   20 exp: lvalue ":=" . rvalue
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
     "nil"     shift, and go to state 25
     ID        shift, and go to state 11
     NUMCONST  shift, and go to state 26
     STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    rvalue  go to state 48
-    lvalue  go to state 29
+    rvalue  go to state 67
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
 
 
-state 33
+state 39
 
     2 chunks: chunk ";" chunks .
 
     $default  reduce using rule 2 (chunks)
 
 
-state 34
+state 40
 
    12 ty: ID .
 
     $default  reduce using rule 12 (ty)
 
 
-state 35
+state 41
 
    11 ty: "array of" . type_id "[" NUMCONST "]"
    13 type_id: . "int"
    14        | . "str"
    15        | . "bool"
+   16        | . "float"
 
-    "int"   shift, and go to state 36
-    "str"   shift, and go to state 37
-    "bool"  shift, and go to state 38
+    "int"    shift, and go to state 42
+    "float"  shift, and go to state 43
+    "str"    shift, and go to state 44
+    "bool"   shift, and go to state 45
 
-    type_id  go to state 49
+    type_id  go to state 68
 
 
-state 36
+state 42
 
    13 type_id: "int" .
 
     $default  reduce using rule 13 (type_id)
 
 
-state 37
+state 43
+
+   16 type_id: "float" .
+
+    $default  reduce using rule 16 (type_id)
+
+
+state 44
 
    14 type_id: "str" .
 
     $default  reduce using rule 14 (type_id)
 
 
-state 38
+state 45
 
    15 type_id: "bool" .
 
     $default  reduce using rule 15 (type_id)
 
 
-state 39
+state 46
 
     7 vardec: "var" ID ":" ty .  [";"]
     8       | "var" ID ":" ty . ":=" rvalue
 
-    ":="  shift, and go to state 50
+    ":="  shift, and go to state 69
 
     $default  reduce using rule 7 (vardec)
 
 
-state 40
+state 47
 
    10 ty: type_id .
 
     $default  reduce using rule 10 (ty)
 
 
-state 41
+state 48
 
     6 vardec: "var" ID ":=" rvalue .
 
     $default  reduce using rule 6 (vardec)
 
 
-state 42
+state 49
 
     9 tydec: "type" ID "=" ty .
 
     $default  reduce using rule 9 (tydec)
 
 
-state 43
-
-   31 lvalue: ID "[" rvalue . "]"
-
-    "]"  shift, and go to state 51
-
-
-state 44
-
-   20 exp: "(" exps ")" .
-
-    $default  reduce using rule 20 (exp)
-
-
-state 45
-
-   19 exp: . lvalue ":=" rvalue
-   20    | . "(" exps ")"
-   21    | . "if" rvalue "then" exp ctrl_else
-   22    | . "while" rvalue "do" exp
-   22    | "while" rvalue "do" . exp
-   23    | . "break"
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
-
-    ID       shift, and go to state 11
-    "("      shift, and go to state 12
-    "while"  shift, and go to state 13
-    "if"     shift, and go to state 14
-    "break"  shift, and go to state 15
-
-    exp     go to state 52
-    lvalue  go to state 18
-
-
-state 46
-
-   19 exp: . lvalue ":=" rvalue
-   20    | . "(" exps ")"
-   21    | . "if" rvalue "then" exp ctrl_else
-   21    | "if" rvalue "then" . exp ctrl_else
-   22    | . "while" rvalue "do" exp
-   23    | . "break"
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
-
-    ID       shift, and go to state 11
-    "("      shift, and go to state 12
-    "while"  shift, and go to state 13
-    "if"     shift, and go to state 14
-    "break"  shift, and go to state 15
-
-    exp     go to state 53
-    lvalue  go to state 18
-
-
-state 47
-
-   17 exps: exp ";" exps .
-
-    $default  reduce using rule 17 (exps)
-
-
-state 48
-
-   19 exp: lvalue ":=" rvalue .
-
-    $default  reduce using rule 19 (exp)
-
-
-state 49
-
-   11 ty: "array of" type_id . "[" NUMCONST "]"
-
-    "["  shift, and go to state 54
-
-
 state 50
 
-    8 vardec: "var" ID ":" ty ":=" . rvalue
-   26 rvalue: . "nil"
-   27       | . NUMCONST
-   28       | . STRCONST
-   29       | . lvalue
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   44 lvalue: ID "[" rvalue . "]"
+
+    "]"  shift, and go to state 70
+
+
+state 51
+
+   21 exp: "(" exps ")" .
+
+    $default  reduce using rule 21 (exp)
+
+
+state 52
+
+   41 texp: "(" rvalue . ")"
+
+    ")"  shift, and go to state 71
+
+
+state 53
+
+   30 binops: "-" binops .
+
+    $default  reduce using rule 30 (binops)
+
+
+state 54
+
+   42 texp: lvalue .
+
+    $default  reduce using rule 42 (texp)
+
+
+state 55
+
+   43 texp: consts .
+
+    $default  reduce using rule 43 (texp)
+
+
+state 56
+
+   20 exp: . lvalue ":=" rvalue
+   21    | . "(" exps ")"
+   22    | . "if" rvalue "then" exp ctrl_else
+   23    | . "while" rvalue "do" exp
+   23    | "while" rvalue "do" . exp
+   24    | . "break"
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+
+    ID       shift, and go to state 11
+    "("      shift, and go to state 12
+    "while"  shift, and go to state 13
+    "if"     shift, and go to state 14
+    "break"  shift, and go to state 15
+
+    exp     go to state 72
+    lvalue  go to state 18
+
+
+state 57
+
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   35       | fexp "+" . binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
     "nil"     shift, and go to state 25
     ID        shift, and go to state 11
     NUMCONST  shift, and go to state 26
     STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    rvalue  go to state 55
-    lvalue  go to state 29
-
-
-state 51
-
-   31 lvalue: ID "[" rvalue "]" .
-
-    $default  reduce using rule 31 (lvalue)
+    binops  go to state 73
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
 
 
-state 52
+state 58
 
-   22 exp: "while" rvalue "do" exp .
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   36       | fexp "-" . binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
-    $default  reduce using rule 22 (exp)
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    binops  go to state 74
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
 
 
-state 53
+state 59
 
-   21 exp: "if" rvalue "then" exp . ctrl_else
-   24 ctrl_else: . "else" exp
-   25          | .  [$end, ";", ")", "else"]
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   31       | fexp "=" . binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
 
-    "else"  shift, and go to state 56
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
 
-    "else"    [reduce using rule 25 (ctrl_else)]
-    $default  reduce using rule 25 (ctrl_else)
+    binops  go to state 75
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
 
-    ctrl_else  go to state 57
+
+state 60
+
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   32       | fexp "<>" . binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
+
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    binops  go to state 76
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
 
 
-state 54
+state 61
+
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   33       | fexp ">" . binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
+
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    binops  go to state 77
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
+
+
+state 62
+
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   34       | fexp "<" . binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
+
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    binops  go to state 78
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
+
+
+state 63
+
+   38 fexp: . texp "*" fexp
+   38     | texp "*" . fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
+
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+
+    fexp    go to state 79
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
+
+
+state 64
+
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   39     | texp "/" . fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
+
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+
+    fexp    go to state 80
+    texp    go to state 33
+    lvalue  go to state 54
+    consts  go to state 55
+
+
+state 65
+
+   20 exp: . lvalue ":=" rvalue
+   21    | . "(" exps ")"
+   22    | . "if" rvalue "then" exp ctrl_else
+   22    | "if" rvalue "then" . exp ctrl_else
+   23    | . "while" rvalue "do" exp
+   24    | . "break"
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+
+    ID       shift, and go to state 11
+    "("      shift, and go to state 12
+    "while"  shift, and go to state 13
+    "if"     shift, and go to state 14
+    "break"  shift, and go to state 15
+
+    exp     go to state 81
+    lvalue  go to state 18
+
+
+state 66
+
+   18 exps: exp ";" exps .
+
+    $default  reduce using rule 18 (exps)
+
+
+state 67
+
+   20 exp: lvalue ":=" rvalue .
+
+    $default  reduce using rule 20 (exp)
+
+
+state 68
+
+   11 ty: "array of" type_id . "[" NUMCONST "]"
+
+    "["  shift, and go to state 82
+
+
+state 69
+
+    8 vardec: "var" ID ":" ty ":=" . rvalue
+   27 rvalue: . binops
+   28       | . lvalue
+   29       | . consts
+   30 binops: . "-" binops
+   31       | . fexp "=" binops
+   32       | . fexp "<>" binops
+   33       | . fexp ">" binops
+   34       | . fexp "<" binops
+   35       | . fexp "+" binops
+   36       | . fexp "-" binops
+   37       | . fexp
+   38 fexp: . texp "*" fexp
+   39     | . texp "/" fexp
+   40     | . texp
+   41 texp: . "(" rvalue ")"
+   42     | . lvalue
+   43     | . consts
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
+   46 consts: . "nil"
+   47       | . NUMCONST
+   48       | . STRCONST
+
+    "nil"     shift, and go to state 25
+    ID        shift, and go to state 11
+    NUMCONST  shift, and go to state 26
+    STRCONST  shift, and go to state 27
+    "("       shift, and go to state 28
+    "-"       shift, and go to state 29
+
+    rvalue  go to state 83
+    binops  go to state 31
+    fexp    go to state 32
+    texp    go to state 33
+    lvalue  go to state 34
+    consts  go to state 35
+
+
+state 70
+
+   44 lvalue: ID "[" rvalue "]" .
+
+    $default  reduce using rule 44 (lvalue)
+
+
+state 71
+
+   41 texp: "(" rvalue ")" .
+
+    $default  reduce using rule 41 (texp)
+
+
+state 72
+
+   23 exp: "while" rvalue "do" exp .
+
+    $default  reduce using rule 23 (exp)
+
+
+state 73
+
+   35 binops: fexp "+" binops .
+
+    $default  reduce using rule 35 (binops)
+
+
+state 74
+
+   36 binops: fexp "-" binops .
+
+    $default  reduce using rule 36 (binops)
+
+
+state 75
+
+   31 binops: fexp "=" binops .
+
+    $default  reduce using rule 31 (binops)
+
+
+state 76
+
+   32 binops: fexp "<>" binops .
+
+    $default  reduce using rule 32 (binops)
+
+
+state 77
+
+   33 binops: fexp ">" binops .
+
+    $default  reduce using rule 33 (binops)
+
+
+state 78
+
+   34 binops: fexp "<" binops .
+
+    $default  reduce using rule 34 (binops)
+
+
+state 79
+
+   38 fexp: texp "*" fexp .
+
+    $default  reduce using rule 38 (fexp)
+
+
+state 80
+
+   39 fexp: texp "/" fexp .
+
+    $default  reduce using rule 39 (fexp)
+
+
+state 81
+
+   22 exp: "if" rvalue "then" exp . ctrl_else
+   25 ctrl_else: . "else" exp
+   26          | .  [$end, ";", ")", "else"]
+
+    "else"  shift, and go to state 84
+
+    "else"    [reduce using rule 26 (ctrl_else)]
+    $default  reduce using rule 26 (ctrl_else)
+
+    ctrl_else  go to state 85
+
+
+state 82
 
    11 ty: "array of" type_id "[" . NUMCONST "]"
 
-    NUMCONST  shift, and go to state 58
+    NUMCONST  shift, and go to state 86
 
 
-state 55
+state 83
 
     8 vardec: "var" ID ":" ty ":=" rvalue .
 
     $default  reduce using rule 8 (vardec)
 
 
-state 56
+state 84
 
-   19 exp: . lvalue ":=" rvalue
-   20    | . "(" exps ")"
-   21    | . "if" rvalue "then" exp ctrl_else
-   22    | . "while" rvalue "do" exp
-   23    | . "break"
-   24 ctrl_else: "else" . exp
-   30 lvalue: . ID
-   31       | . ID "[" rvalue "]"
+   20 exp: . lvalue ":=" rvalue
+   21    | . "(" exps ")"
+   22    | . "if" rvalue "then" exp ctrl_else
+   23    | . "while" rvalue "do" exp
+   24    | . "break"
+   25 ctrl_else: "else" . exp
+   44 lvalue: . ID "[" rvalue "]"
+   45       | . ID
 
     ID       shift, and go to state 11
     "("      shift, and go to state 12
@@ -814,32 +1473,32 @@ state 56
     "if"     shift, and go to state 14
     "break"  shift, and go to state 15
 
-    exp     go to state 59
+    exp     go to state 87
     lvalue  go to state 18
 
 
-state 57
+state 85
 
-   21 exp: "if" rvalue "then" exp ctrl_else .
+   22 exp: "if" rvalue "then" exp ctrl_else .
 
-    $default  reduce using rule 21 (exp)
+    $default  reduce using rule 22 (exp)
 
 
-state 58
+state 86
 
    11 ty: "array of" type_id "[" NUMCONST . "]"
 
-    "]"  shift, and go to state 60
+    "]"  shift, and go to state 88
 
 
-state 59
+state 87
 
-   24 ctrl_else: "else" exp .
+   25 ctrl_else: "else" exp .
 
-    $default  reduce using rule 24 (ctrl_else)
+    $default  reduce using rule 25 (ctrl_else)
 
 
-state 60
+state 88
 
    11 ty: "array of" type_id "[" NUMCONST "]" .
 

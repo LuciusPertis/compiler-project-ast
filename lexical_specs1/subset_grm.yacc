@@ -50,6 +50,7 @@ ty      : type_id
 type_id : "int"
         | "str"
         | "bool"
+        | "float"
         ;
 
 /* Expressions */
@@ -69,11 +70,9 @@ ctrl_else       : "else" exp                       /* Control Flow */
                 | /* nullable epsillon */                                                      
         ;
 
-rvalue  : NIL                    /* Literal  */
-        | NUMCONST               /* Literals ----- */
-        | STRCONST               /* Literals ----- */
+rvalue  : binops
         | lvalue
-        | binops
+        | consts
         ;
 binops  : "-" binops            /* Operations */
         
@@ -89,13 +88,19 @@ binops  : "-" binops            /* Operations */
         ;
 fexp    : texp "*" fexp
         | texp "/" fexp
+        | texp
         ;
 texp    : "(" rvalue ")"
-        | rvalue
+        | lvalue
+        | consts
         ;
 
-lvalue  : ID 
-        | ID "[" rvalue "]"
+lvalue  : ID "[" rvalue "]"
+        | ID 
+        ;
+consts  : NIL                    /* Literal  */
+        | NUMCONST               /* Literals ----- */
+        | STRCONST               /* Literals ----- */
         ;
         
 

@@ -48,6 +48,94 @@ OMGGGG it WAS A TYPOOOOO ":" instead of "|"
 thank god i installed a syntax highlighter for yacc :/
 
 
+commit 730e429ec8dc75df917c251c4f4102315b502f61 (HEAD -> main)
+Author: --help <luciuspertis@gmail.com>
+Date:   Sun Nov 5 02:53:00 2023 +0530
+
+    fix: vardec exp collision typo
+
+Note:
+testing if typo was the only issue and we can remove ";" bounding of exp
+
+subset_grm.yacc: warning: 3 nonterminals useless in grammar
+subset_grm.yacc: warning: 13 rules useless in grammar
+subset_grm.yacc:76.11-16: warning: nonterminal useless in grammar: binops
+subset_grm.yacc:80.11-14: warning: nonterminal useless in grammar: fexp
+subset_grm.yacc:90.11-14: warning: nonterminal useless in grammar: texp
+subset_grm.yacc:76.11-16: warning: rule useless in grammar: rvalue: binops
+subset_grm.yacc:78.11-20: warning: rule useless in grammar: binops: "-" binops
+subset_grm.yacc:80.11-25: warning: rule useless in grammar: binops: fexp "=" binops
+subset_grm.yacc:81.11-25: warning: rule useless in grammar: binops: fexp "<>" binops
+subset_grm.yacc:82.11-25: warning: rule useless in grammar: binops: fexp ">" binops
+subset_grm.yacc:83.11-25: warning: rule useless in grammar: binops: fexp "<" binops
+subset_grm.yacc:85.11-25: warning: rule useless in grammar: binops: fexp "+" binops
+subset_grm.yacc:86.11-25: warning: rule useless in grammar: binops: fexp "-" binops
+subset_grm.yacc:88.11-14: warning: rule useless in grammar: binops: fexp
+subset_grm.yacc:90.11-23: warning: rule useless in grammar: fexp: texp "*" fexp
+subset_grm.yacc:91.11-23: warning: rule useless in grammar: fexp: texp "/" fexp
+subset_grm.yacc:93.11-24: warning: rule useless in grammar: texp: "(" rvalue ")"
+subset_grm.yacc:94.11-16: warning: rule useless in grammar: texp: rvalue
+subset_grm.yacc: conflicts: 1 shift/reduce
+
+getting the above for both cases ie.
+code: chunks  : chunk ";" chunks  
+code: chunks  : chunk chunks  
+
+Parses is completely ignoring binops ??!! WHYY
+maybe this
+code:
+rvalue  : NIL                    /* Literal  */
+        | NUMCONST               /* Literals ----- */
+        | STRCONST               /* Literals ----- */
+        | binops
+        | lvalue
+        ;
+:code
+this helps ? i changed the sequence of binops (before) lvalue (works for precedance ri8)
+
+NOPE SAME OUTPUT !
+
+This was the error
+code:
+fexp    : texp "*" fexp
+        | texp "/" fexp
+        | texp
+        ;
+:code
+i dint have the fexp->texp production
+
+But now
+
+subset_grm.yacc: conflicts: 13 shift/reduce, 141 reduce/reduce
+subset_grm.yacc:79.11-20: warning: rule useless in parser due to conflicts: binops: "-" binops
+subset_grm.yacc:81.11-25: warning: rule useless in parser due to conflicts: binops: fexp "=" binops
+subset_grm.yacc:82.11-25: warning: rule useless in parser due to conflicts: binops: fexp "<>" binops
+subset_grm.yacc:83.11-25: warning: rule useless in parser due to conflicts: binops: fexp ">" binops
+subset_grm.yacc:84.11-25: warning: rule useless in parser due to conflicts: binops: fexp "<" binops
+subset_grm.yacc:86.11-25: warning: rule useless in parser due to conflicts: binops: fexp "+" binops
+subset_grm.yacc:87.11-25: warning: rule useless in parser due to conflicts: binops: fexp "-" binops
+subset_grm.yacc:91.11-23: warning: rule useless in parser due to conflicts: fexp: texp "*" fexp
+subset_grm.yacc:92.11-23: warning: rule useless in parser due to conflicts: fexp: texp "/" fexp
+
+13 / 141 conflicts ;)
+
+The problem i guess is (for eg.) in the conflict
+code:
+state 30
+
+   23 exp: "while" rvalue . "do" exp
+   44 texp: rvalue .  ["+", "-", "*", "/", "=", "<>", ">", "<", "do"]
+
+    "do"  shift, and go to state 54
+
+    "do"      [reduce using rule 44 (texp)]
+    $default  reduce using rule 44 (texp)
+:code
+
+because rvalue->>texp->rvalue this is causing the grammer to become context sensitive ! its almost like left recurrsion
+
+All conflicts are being caused by production
+texp -> rvalue
 
 
 
