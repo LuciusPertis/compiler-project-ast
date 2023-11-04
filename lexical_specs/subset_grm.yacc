@@ -1,8 +1,8 @@
 
 %token NIL "nil"
 %token ID
-%token INT
-%token STR
+%token NUMCONST
+%token STRCONST
 %token SEMICOLON ";"
 %token OBRA "(" CBRA ")" 
 
@@ -15,6 +15,8 @@
 %token LOOPCON "while" LOOPBODY "do"
 %token JMPCON "if" JMPTRUE "then" JMPFALSE "else"
 %token BREAK "break"
+
+%left "+" "-" "*" "/" "<>" ">" "<" "="
 
 %%
 
@@ -29,12 +31,13 @@ chunk   : tydec chunk
         ;
 
 /* Expressions */
-exps    : exp { ";" exp } 
+exps    : exp 
+        | exp ";" exp exps  
         |                   /* Nullable */
         ;
 exp     : NIL         
-        | INT           /* Literals ----- */
-        | STR           /* Literals ----- */
+        | NUMCONST           /* Literals ----- */
+        | STRCONST           /* Literals ----- */
         
         | lvalue        /* Variables, field, elements of an array. */
         | lvalue ":=" exp

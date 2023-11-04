@@ -1,0 +1,21 @@
+commit 83d2273cad41ea51ba5b9e6e7173cb9ff3beaddd (HEAD -> main, origin/main)
+Author: --help <luciuspertis@gmail.com>
+Date:   Sun Nov 5 02:03:38 2023 +0530
+
+    fix: array init and ref, program chunks
+
+Note:
+subset_grm.yacc: conflicts: 13 shift/reduce, 220 reduce/reduce
+subset_grm.yacc:77.11-20: warning: rule useless in parser due to conflicts: binops: "-" binops
+subset_grm.yacc:79.11-25: warning: rule useless in parser due to conflicts: binops: fexp "=" binops
+subset_grm.yacc:80.11-25: warning: rule useless in parser due to conflicts: binops: fexp "<>" binops
+subset_grm.yacc:81.11-25: warning: rule useless in parser due to conflicts: binops: fexp ">" binops
+subset_grm.yacc:82.11-25: warning: rule useless in parser due to conflicts: binops: fexp "<" binops
+subset_grm.yacc:84.11-25: warning: rule useless in parser due to conflicts: binops: fexp "+" binops
+subset_grm.yacc:85.11-25: warning: rule useless in parser due to conflicts: binops: fexp "-" binops
+subset_grm.yacc:89.11-23: warning: rule useless in parser due to conflicts: fexp: fexp "*" fexp
+subset_grm.yacc:90.11-23: warning: rule useless in parser due to conflicts: fexp: fexp "/" fexp
+
+can't understand why 
+binops  : "-" binops  
+is redundant because fexp is not nullable/epsillon

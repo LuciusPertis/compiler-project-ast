@@ -9,8 +9,8 @@
 "nil"                   { return NIL; }
 
 [a-zA-Z][a-zA-Z0-9_]*   { return ID; }
-[1-9][0-9]*             { return INT; }
-\" [^\"\n] \"           { return STR; }
+[1-9][0-9]*             { return NUMCONST; }
+\" [^\"\n] \"           { return STRCONST; }
 
 ";"                     { return SEMICOLON; }
 
