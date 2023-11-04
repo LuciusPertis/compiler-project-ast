@@ -5,7 +5,8 @@
 %token STRCONST
 %token SEMICOLON ";"
 %token COLON ":"
-%token OBRA "(" CBRA ")" 
+%token OBRA "(" CBRA ")"
+%token OARRBRA  "[" CARRBRA"]"
 
 %token PLUS "+" MINUS "-" MULT "*" DIVIDE "/" EQ "=" NOTEQ "<>" GT ">" LT "<"
 %token ASSIGN ":="
@@ -26,23 +27,23 @@
 %%
 
 /* Program struct */
-program : exp
-        | chunks
+program : chunks exps           /* this forces decl before use */
         ;
 chunks  : chunk chunks
         ;
-chunk   : tydec chunk
+chunk   : tydec
         | vardec
         ;
 
 /* declarations */
 vardec  : "var" ID ":=" rvalue
-        : "var" ID ":" ty "
+        : "var" ID ":" ty      /* if type is given, init val not required; also array cant be init during decl (we will add a rule for this or init all elems with the rvalue ) */
+        : "var" ID ":" ty ":=" rvalue
         ;
 tydec   : "type" ID "=" ty
         ;
 ty      : type_id
-        | "array of" type_id
+        | "array of" type_id "[" NUMCONST "]"   /* fixed size intro */
         ;
 type_id : "int"
         | "str"
@@ -54,13 +55,15 @@ exps    : exp
         | exp ";" exps  
         |                       /* Nullable */
         ;       
-exp     :  lvalue ":=" rvalue    /* Variables */
+exp     : lvalue ":=" rvalue    /* Variables assingment */
 
-        | "if"    rvalue "then" exps  ctrl_else     /* Control Flow */
-        | "while" rvalue "do"   exps                /* Control Flow */
+        | "(" exps ")"          /* block/group expressions */
+
+        | "if"    rvalue "then" exp  ctrl_else     /* Control Flow */
+        | "while" rvalue "do"   exp                /* Control Flow */
         | "break"                                   /* Control Flow */
         ;
-ctrl_else       : "else" exps                       /* Control Flow */
+ctrl_else       : "else" exp                       /* Control Flow */
                 | %empty                                                      
         ;
 
@@ -90,6 +93,7 @@ fexp    : "(" rvalue ")"
         ;
 
 lvalue  : ID 
+        : ID "[" rvalue "]"
         ;
         
 
