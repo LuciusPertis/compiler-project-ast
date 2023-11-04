@@ -3,6 +3,7 @@
 %token ID
 %token NUMCONST
 %token STRCONST
+%token FLOATCONST
 %token SEMICOLON ";"
 %token COLON ":"
 %token OBRA "(" CBRA ")"
@@ -23,6 +24,8 @@
 %left "<>" ">" "<" "="
 %left "+" "-"
 %left "*" "/" 
+
+%right "then" "else" // Same precedence, but "shift" wins.
 
 %%
 
@@ -62,12 +65,10 @@ exp     : lvalue ":=" rvalue    /* Variables assingment */
 
         | "(" exps ")"          /* block/group expressions */
 
-        | "if"    rvalue "then" exp  ctrl_else     /* Control Flow */
+        | "if"    rvalue "then" exp  
+        | "if"    rvalue "then" exp  "else" exp     /* Control Flow */
         | "while" rvalue "do"   exp                /* Control Flow */
         | "break"                                   /* Control Flow */
-        ;
-ctrl_else       : "else" exp                       /* Control Flow */
-                | /* nullable epsillon */                                                      
         ;
 
 rvalue  : binops
@@ -101,6 +102,7 @@ lvalue  : ID "[" rvalue "]"
 consts  : NIL                    /* Literal  */
         | NUMCONST               /* Literals ----- */
         | STRCONST               /* Literals ----- */
+        | FLOATCONST
         ;
         
 
