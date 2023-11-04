@@ -138,5 +138,50 @@ All conflicts are being caused by production
 texp -> rvalue
 
 
+commit 54a80feb7adb123fb9d0be0d2bd9722270176d7f (HEAD -> main)
+Author: --help <luciuspertis@gmail.com>
+Date:   Sun Nov 5 03:59:10 2023 +0530
+
+    fix: rvalue->>texp->rvalue reduce/reduce conflict
+    
+    214 conflict down to 14
+
+Note:
+
+OH yeahhh
+code:
+rvalue  : binops
+        | lvalue
+        | consts
+        ;
+texp    : "(" rvalue ")"
+        | lvalue
+        | consts
+        ;
+
+lvalue  : ID "[" rvalue "]"
+        | ID 
+        ;
+consts  : NIL                    /* Literal  */
+        | NUMCONST               /* Literals ----- */
+        | STRCONST               /* Literals ----- */
+        ;
+:code
+
+now recursive texp->rvalue are bounded by "()" and only constants or lvalue, which have immediate values can be out side "()"
+
+the remaining 14 conflicts are also because of the SAME
+code:
+State 35 conflicts: 7 reduce/reduce
+State 36 conflicts: 7 reduce/reduce
+State 82 conflicts: 1 shift/reduce
+:code
+
+tracing them
+
+conflict in state 82 was simple dangling if-else
+resolved
+
+
 
 
