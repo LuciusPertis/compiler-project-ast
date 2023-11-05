@@ -262,3 +262,13 @@ code: chunks : chunk ";" chunks
 no conflicts 
 
 
+commit 59e91ca5586ea1306ddee6d8e2ab171dffdb47e9 (HEAD -> main, origin/main)
+Author: --help <luciuspertis@gmail.com>
+Date:   Sun Nov 5 09:27:02 2023 +0530
+
+    add: semantic action started
+
+    designed atom
+
+Note:
+started with semantics
