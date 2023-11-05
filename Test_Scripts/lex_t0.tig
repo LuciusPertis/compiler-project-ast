@@ -1,0 +1,14 @@
+var a := 3
+var b := 5
+var c : int
+
+c := a + b
+b := 2 * a + c
+
+if b > a then
+    c := 0
+else
+    c := 10
+
+while c do
+    c

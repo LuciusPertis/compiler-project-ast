@@ -272,3 +272,33 @@ Date:   Sun Nov 5 09:27:02 2023 +0530
 
 Note:
 started with semantics
+
+Having a lot of torouble with semantics; im complicating stuff
+code:
+union val{
+    int ival; float fval ...
+};
+union val* PRGMEM[MEMSIZE] = {NULL};
+enum bool{
+};
+enum types {
+    NIL, NUMCONST ...
+};
+struct Atom
+{
+    const char * lex;
+    
+    int typ_size;
+    int memlength;
+    enum types typ_label;
+
+    int memaddr;
+    int symlabel;
+};
+:code
+
+this is not at all simple
+
+starting to build a simple AST first
+
+TO FRUSTRATED; THEORICAL CONCEPT OF SDD and SDT POOR !
