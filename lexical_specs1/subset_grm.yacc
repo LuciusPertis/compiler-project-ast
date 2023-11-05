@@ -32,7 +32,7 @@
 /* Program struct */
 program : chunks exps           /* this forces decl before use */
         ;
-chunks  : chunk ";" chunks      /* adding semicolon to bound exp from decl, desperate move */
+chunks  : chunk chunks      /* adding semicolon to bound exp from decl, desperate move */
         | /* nullable epsillon */
         ;
 chunk   : tydec
@@ -73,10 +73,9 @@ exp     : lvalue ":=" rvalue    /* Variables assingment */
 
 rvalue  : binops
         | texp
+        | "-" binops
         ;
-binops  : "-" binops            /* Operations */
-        
-        | fexp "=" binops
+binops  : fexp "=" binops
         | fexp "<>"binops 
         | fexp ">" binops
         | fexp "<" binops

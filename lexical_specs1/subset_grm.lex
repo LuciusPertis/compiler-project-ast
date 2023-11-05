@@ -27,6 +27,7 @@
 
 [a-zA-Z][a-zA-Z0-9_]*   { return ID; }
 [1-9][0-9]*             { return NUMCONST; }
+[0-9]+\.[0-9]+          { return FLOATCONST; }
 \" [^\"\n] \"           { return STRCONST; }
 
 ";"                     { return SEMICOLON; }
@@ -45,7 +46,7 @@
 "/"     { return DIVIDE; }
 "="     { return EQ; }
 "<>"    { return NOTEQ; }
-">"     { retunr GT; }
+">"     { return GT; }
 "<"     { return LT; }
 ":="    { return ASSIGN; }
 

@@ -247,5 +247,18 @@ fexp    : texp "*" fexp
 ZERO WARNING !
 <3 <3 <3
 
+commit 104f76f36f662fdd747cd0bfdb5b47f3de40514a (HEAD -> main)
+Author: --help <luciuspertis@gmail.com>
+Date:   Sun Nov 5 05:34:34 2023 +0530
+
+    fix: all conflicts resolved zero warnings by parser
+    
+    rvalue->>texp->const conflict resolved
+
+Note:
+
+removed semicolon from
+code: chunks : chunk ";" chunks
+no conflicts 
 
 
