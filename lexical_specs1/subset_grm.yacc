@@ -72,8 +72,7 @@ exp     : lvalue ":=" rvalue    /* Variables assingment */
         ;
 
 rvalue  : binops
-        | lvalue
-        | consts
+        | texp
         ;
 binops  : "-" binops            /* Operations */
         
@@ -89,7 +88,8 @@ binops  : "-" binops            /* Operations */
         ;
 fexp    : texp "*" fexp
         | texp "/" fexp
-        | texp
+        | texp "*" texp
+        | texp "/" texp
         ;
 texp    : "(" rvalue ")"
         | lvalue

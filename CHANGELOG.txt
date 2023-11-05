@@ -181,7 +181,71 @@ tracing them
 
 conflict in state 82 was simple dangling if-else
 resolved
+code: Conflict between rule 22 and token "else" resolved as shift (%right "else").
 
+tracing state 36, 37 conflicts
+
+texp->[13,14,21,23,29,39,70] consts ->36
+
+by force texp to be always resolved i removed 
+code: rvalue : consts
+to
+code: rvalue : texp
+
+now 
+subset_grm.yacc: conflicts: 7 reduce/reduce
+code: State 34 conflicts: 7 reduce/reduce
+
+it was simply the path rvalue->binops->fexp->texp
+removed it cus its bypassed by rvalue->texp
+
+changed 
+code: fexp : texp "*" fexp | texp "/" fexp | texp ;
+to
+code: fexp : texp "*" fexp | texp "/" fexp ;
+
+no conflicts now
+
+subset_grm.yacc: warning: 2 nonterminals useless in grammar
+subset_grm.yacc: warning: 11 rules useless in grammar
+subset_grm.yacc:74.11-16: warning: nonterminal useless in grammar: binops
+subset_grm.yacc:79.11-14: warning: nonterminal useless in grammar: fexp
+subset_grm.yacc:74.11-16: warning: rule useless in grammar: rvalue: binops
+subset_grm.yacc:77.11-20: warning: rule useless in grammar: binops: "-" binops
+subset_grm.yacc:79.11-25: warning: rule useless in grammar: binops: fexp "=" binops
+subset_grm.yacc:80.11-25: warning: rule useless in grammar: binops: fexp "<>" binops
+subset_grm.yacc:81.11-25: warning: rule useless in grammar: binops: fexp ">" binops
+subset_grm.yacc:82.11-25: warning: rule useless in grammar: binops: fexp "<" binops
+subset_grm.yacc:84.11-25: warning: rule useless in grammar: binops: fexp "+" binops
+subset_grm.yacc:85.11-25: warning: rule useless in grammar: binops: fexp "-" binops
+subset_grm.yacc:87.11-14: warning: rule useless in grammar: binops: fexp
+subset_grm.yacc:89.11-23: warning: rule useless in grammar: fexp: texp "*" fexp
+subset_grm.yacc:90.11-23: warning: rule useless in grammar: fexp: texp "/" fexp
+
+it was bypassing/ignoring binops again
+basically we need to force binops for "binary operations only" and not single independant terms (requiring no operators to find value)
+
+simple mistake fexp->...fexp can never resolve because i removed fexp->texp
+
+changed 
+code:
+fexp    : texp "*" fexp
+        | texp "/" fexp
+        | texp
+        ;
+:code
+
+to
+code:
+fexp    : texp "*" fexp
+        | texp "/" fexp
+        | texp "*" texp
+        | texp "/" texp
+        ;
+:code
+
+ZERO WARNING !
+<3 <3 <3
 
 
 
