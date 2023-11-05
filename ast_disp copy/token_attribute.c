@@ -25,7 +25,7 @@ struct atom* createtoken_numconst(const char* label){
         printf(">> NO MEMOMRY");
         exit(-1);
     }
-
+    
     a->ival = atoi(yytext);
     strncpy(a->label, label, sizeof(a->label));
 
